@@ -1,69 +1,68 @@
 #include "stdafx.h"
 #include <iostream>
-#include <clocale>
 #include <vector>
 #include <string>
 
 using namespace std;
 
-class log_form
+class logic_formula
 {
 private:
-	struct make
+	struct set
 	{
 		bool x1;
 		bool x2;
 		bool x3;
 		bool f;
 	};
-	struct List
+	struct Stack
 	{
-		List* next;
+		Stack* next;
 		char info;
 	};
-	make tablic[8];
-	string form;
+	set table[8];
+	string formula;
 	string sdnf;
 	string sknf;
-	string num_bin_sdnf;
-	string num_bin_sknf;
-	string num_dec_sdnf;
-	string num_dec_sknf;
-	string indeks;
+	string numeric_binary_sdnf;
+	string numeric_binary_sknf;
+	string numeric_decimal_sdnf;
+	string numeric_decimal_sknf;
+	string index;
 
-	List* push_(List* res_storage, bool in)
+	Stack* push_(Stack* p, bool in)
 	{
-		List* temp_storage = new List;
-		temp_storage->info = in;
-		temp_storage->next = res_storage;
-		return temp_storage;
+		Stack* t = new Stack;
+		t->info = in;
+		t->next = p;
+		return t;
 	}
-	List* add(List* res_storage, char in)
+	Stack* push(Stack* p, char in)
 	{
-		List* temp_storage = new List;
-		temp_storage->info = in;
-		temp_storage->next = res_storage;
-		return temp_storage;
+		Stack* t = new Stack;
+		t->info = in;
+		t->next = p;
+		return t;
 	}
-	List* del(List* res_storage, char* out)
+	Stack* pop(Stack* p, char* out)
 	{
-		List* temp_storage = res_storage;
-		*out = res_storage->info;
-		res_storage = res_storage->next;
-		delete temp_storage;
-		return res_storage;
+		Stack* t = p;
+		*out = p->info;
+		p = p->next;
+		delete t;
+		return p;
 	}
-	List* pop_(List* res_storage, bool* out)
+	Stack* pop_(Stack* p, bool* out)
 	{
-		List* temp_storage = res_storage;
-		*out = res_storage->info;
-		res_storage = res_storage->next;
-		delete temp_storage;
-		return res_storage;
+		Stack* t = p;
+		*out = p->info;
+		p = p->next;
+		delete t;
+		return p;
 	}
-	int prioritet(char oper)
+	int prior(char operat)
 	{
-		switch (oper)
+		switch (operat)
 		{
 		case '!': return 4;
 		case '*': return 3;
@@ -72,133 +71,151 @@ private:
 		}
 		return 0;
 	}
-	string transfer(string inlin) {
-		string outline;
-		List* st = NULL;
+	string translate(string in)
+	{
+		string out;
+		Stack* st = NULL;
 		char buff;
-		for (int i = 0; i < inlin.length(); i++) {
-			if (inlin[i] == '(') {
-				st = add(st, inlin[i]);
+		for (int i = 0; i < in.length(); i++)
+		{
+			if (in[i] == '(')
+			{
+				st = push(st, in[i]);
 			}
-			else if (inlin[i] == ')') {
-				while (st != NULL && (st->info) != '(') {
-					st = del(st, &buff);
-					outline += buff;
+			if (in[i] == ')')
+			{
+				while ((st->info) != '(')
+				{
+					st = pop(st, &buff);
+					out += buff;
 				}
-				if (st != NULL) {
-					st = del(st, &buff);
-				}
+				st = pop(st, &buff);
 			}
-			else if (inlin[i] >= 'a' && inlin[i] <= 'c') {
-				outline += inlin[i];
+			if (in[i] >= 'a' && in[i] <= 'c')
+			{
+				out += in[i];
 			}
-			else if (inlin[i] == '*' || inlin[i] == '+' || inlin[i] == '!') {
-				while (st != NULL && prioritet(st->info) >= prioritet(inlin[i])) {
-					st = del(st, &buff);
-					outline += buff;
+			if (in[i] == '*' || in[i] == '+' || in[i] == '!')
+			{
+				while (st != NULL && prior(st->info) >= prior(in[i]))
+				{
+					st = pop(st, &buff);
+					out += buff;
 				}
-				st = add(st, inlin[i]);
+				st = push(st, in[i]);
 			}
 		}
-		while (st != NULL) {
-			st = del(st, &buff);
-			outline += buff;
+		while (st != NULL)
+		{
+			st = pop(st, &buff);
+			out += buff;
 		}
-		return outline;
+		return out;
 	}
-	double res(string inlin, bool a, bool b, bool c) {
-		List* st_sense = NULL;
+	double result(string in, bool a, bool b, bool c)
+	{
+		Stack* st_val = NULL;
 		bool n1, n2, res;
-		for (int i = 0; i < inlin.length(); i++) {
-			switch (inlin[i]) {
-			case 'a':
-				st_sense = push_(st_sense, a);
-				break;
-			case 'b':
-				st_sense = push_(st_sense, b);
-				break;
-			case 'c':
-				st_sense = push_(st_sense, c);
-				break;
-			case '+': {
-				if (st_sense != NULL) {
-					st_sense = pop_(st_sense, &n2);
-				}
-				if (st_sense != NULL) {
-					st_sense = pop_(st_sense, &n1);
-				}
+		for (int i = 0; i < in.length(); i++)
+		{
+			switch (in[i])
+			{
+			case 'a': st_val = push_(st_val, a); break;
+			case 'b': st_val = push_(st_val, b); break;
+			case 'c': st_val = push_(st_val, c); break;
+			case '+':
+			{
+				st_val = pop_(st_val, &n2);
+				st_val = pop_(st_val, &n1);
 				res = n1 | n2;
-				st_sense = push_(st_sense, res);
+				st_val = push_(st_val, res);
 				break;
 			}
-			case '*': {
-				if (st_sense != NULL) {
-					st_sense = pop_(st_sense, &n2);
-				}
-				if (st_sense != NULL) {
-					st_sense = pop_(st_sense, &n1);
-				}
+			case '*':
+			{
+				st_val = pop_(st_val, &n2);
+				st_val = pop_(st_val, &n1);
 				res = n1 & n2;
-				st_sense = push_(st_sense, res);
+				st_val = push_(st_val, res);
 				break;
 			}
-			case '!': {
-				if (st_sense != NULL) {
-					st_sense = pop_(st_sense, &n1);
-				}
+			case '!':
+			{
+				st_val = pop_(st_val, &n1);
 				res = !n1;
-				st_sense = push_(st_sense, res);
+				st_val = push_(st_val, res);
 				break;
 			}
 			}
-		}
-		if (st_sense != NULL) {
-			st_sense = pop_(st_sense, &res);
 		}
 		return res;
 	}
-	
 public:
-	log_form(string formula)
+	logic_formula(string fl)
 	{
-		form = formula;
+		formula = fl;
 		sdnf = "";
 		sknf = "";
-		num_bin_sdnf = "";
-		num_bin_sknf = "";
-		num_dec_sdnf = "";
-		num_dec_sknf = "";
-		indeks = "";
+		numeric_binary_sdnf = "";
+		numeric_binary_sknf = "";
+		numeric_decimal_sdnf = "";
+		numeric_decimal_sknf = "";
+		index = "";
 
-		tablic[0] = { 0, 0, 0, 0 };
-		tablic[1] = { 1, 0, 0, 0 };
-		tablic[2] = { 0, 1, 0, 0 };
-		tablic[3] = { 0, 0, 1, 0 };
-		tablic[4] = { 1, 1, 0, 0 };
-		tablic[5] = { 0, 1, 1, 0 };
-		tablic[6] = { 1, 0, 1, 0 };
-		tablic[7] = { 1, 1, 1, 0 };
+		//table initialization
+		table[0].x1 = 0;
+		table[0].x2 = 0;
+		table[0].x3 = 0;
 
-		string reverse_pol_form = transfer(form);
-		for (int iter = 0; iter < 8; iter++)
+		table[1].x1 = 1;
+		table[1].x2 = 0;
+		table[1].x3 = 0;
+
+		table[2].x1 = 0;
+		table[2].x2 = 1;
+		table[2].x3 = 0;
+
+		table[3].x1 = 0;
+		table[3].x2 = 0;
+		table[3].x3 = 1;
+
+		table[4].x1 = 1;
+		table[4].x2 = 1;
+		table[4].x3 = 0;
+
+		table[5].x1 = 0;
+		table[5].x2 = 1;
+		table[5].x3 = 1;
+
+		table[6].x1 = 1;
+		table[6].x2 = 0;
+		table[6].x3 = 1;
+
+		table[7].x1 = 1;
+		table[7].x2 = 1;
+		table[7].x3 = 1;
+
+		string reverse_polish_formula = translate(formula);
+		for (int i = 0; i < 8; i++)
 		{
-			tablic[iter].f = res(reverse_pol_form,
-				tablic[iter].x1, tablic[iter].x2, tablic[iter].x3);
+			table[i].f = result(reverse_polish_formula,
+				table[i].x1, table[i].x2, table[i].x3);
 		}
-		for (int iter = 0; iter < 8; iter++)
+		//SDNF initialization
+		for (int i = 0; i < 8; i++)
 		{
-			if (tablic[iter].f == 1)
+			if (table[i].f == 1)
 			{
-				if (tablic[iter].x1 == 0)
+				if (table[i].x1 == 0)
 				{
-					sdnf += "!а*";
+					sdnf += "!a*";
 				}
 				else
 				{
 					sdnf += "a*";
 				}
 
-				if (tablic[iter].x2 == 0)
+				if (table[i].x2 == 0)
 				{
 					sdnf += "!b*";
 				}
@@ -207,7 +224,7 @@ public:
 					sdnf += "b*";
 				}
 
-				if (tablic[iter].x3 == 0)
+				if (table[i].x3 == 0)
 				{
 					sdnf += "!c";
 				}
@@ -220,21 +237,22 @@ public:
 			}
 		}
 		sdnf.erase(sdnf.begin() + sdnf.size() - 1);
-		for (int iter = 0; iter < 8; iter++)
+		//SKNF initialization
+		for (int i = 0; i < 8; i++)
 		{
-			if (tablic[iter].f == 0)
+			if (table[i].f == 0)
 			{
 				sknf += "(";
-				if (tablic[iter].x1 == 1)
+				if (table[i].x1 == 1)
 				{
-					sknf += "!а+";
+					sknf += "!a+";
 				}
 				else
 				{
-					sknf += "а+";
+					sknf += "a+";
 				}
 
-				if (tablic[iter].x2 == 1)
+				if (table[i].x2 == 1)
 				{
 					sknf += "!b+";
 				}
@@ -243,13 +261,13 @@ public:
 					sknf += "b+";
 				}
 
-				if (tablic[iter].x3 == 1)
+				if (table[i].x3 == 1)
 				{
-					sknf += "!с";
+					sknf += "!c";
 				}
 				else
 				{
-					sknf += "с";
+					sknf += "c";
 				}
 
 				sknf += ")";
@@ -257,41 +275,44 @@ public:
 			}
 		}
 		sknf.erase(sknf.begin() + sknf.size() - 1);
-		for (int iter = 0; iter < 8; iter++)
+		//numeric binary SDNF initialization
+		for (int i = 0; i < 8; i++)
 		{
-			if (tablic[iter].f == 1)
+			if (table[i].f == 1)
 			{
-				num_bin_sdnf += to_string(tablic[iter].x1);
-				num_bin_sdnf += to_string(tablic[iter].x2);
-				num_bin_sdnf += to_string(tablic[iter].x3);
-				num_bin_sdnf += "+";
+				numeric_binary_sdnf += to_string(table[i].x1);
+				numeric_binary_sdnf += to_string(table[i].x2);
+				numeric_binary_sdnf += to_string(table[i].x3);
+				numeric_binary_sdnf += "+";
 			}
 		}
-		num_bin_sdnf.erase(num_bin_sdnf.begin()
-			+ num_bin_sdnf.size() - 1);
-		for (int iter = 0; iter < 8; iter++)
+		numeric_binary_sdnf.erase(numeric_binary_sdnf.begin()
+			+ numeric_binary_sdnf.size() - 1);
+		//numeric binary SKNF initialization
+		for (int i = 0; i < 8; i++)
 		{
-			if (tablic[iter].f == 0)
+			if (table[i].f == 0)
 			{
-				num_bin_sknf += to_string(tablic[iter].x1);
-				num_bin_sknf += to_string(tablic[iter].x2);
-				num_bin_sknf += to_string(tablic[iter].x3);
-				num_bin_sknf += "*";
+				numeric_binary_sknf += to_string(table[i].x1);
+				numeric_binary_sknf += to_string(table[i].x2);
+				numeric_binary_sknf += to_string(table[i].x3);
+				numeric_binary_sknf += "*";
 			}
 		}
-		num_bin_sknf.erase(num_bin_sknf.begin()
-			+ num_bin_sknf.size() - 1);
+		numeric_binary_sknf.erase(numeric_binary_sknf.begin()
+			+ numeric_binary_sknf.size() - 1);
+		//numeric decimal SDNF initialization
 		string buff = "";
-		for (int iter = 0; iter < 8; iter++)
+		for (int i = 0; i < 8; i++)
 		{
-			if (tablic[iter].f == 1)
+			if (table[i].f == 1)
 			{
 				buff = "";
-				buff += to_string(tablic[iter].x1);
-				buff += to_string(tablic[iter].x2);
-				buff += to_string(tablic[iter].x3);
+				buff += to_string(table[i].x1);
+				buff += to_string(table[i].x2);
+				buff += to_string(table[i].x3);
 
-				int l, a, iter, k;
+				int l, a, i, k;
 				l = buff.size();
 				a = 0;
 				k = 1;
@@ -299,9 +320,9 @@ public:
 				{
 					a = a + k;
 				}
-				for (iter = l - 1; iter >= 0; --iter)
+				for (i = l - 1; i >= 0; --i)
 				{
-					if (buff[iter] == '1')
+					if (buff[i] == '1')
 					{
 						a = a + k;
 					}
@@ -310,22 +331,23 @@ public:
 
 				buff = to_string(a);
 
-				num_dec_sdnf += buff;
-				num_dec_sdnf += "+";
+				numeric_decimal_sdnf += buff;
+				numeric_decimal_sdnf += "+";
 			}
 		}
-		num_dec_sdnf.erase(num_dec_sdnf.begin()
-			+ num_dec_sdnf.size() - 1);
-		for (int iter = 0; iter < 8; iter++)
+		numeric_decimal_sdnf.erase(numeric_decimal_sdnf.begin()
+			+ numeric_decimal_sdnf.size() - 1);
+		//numeric decimal SKNF initialization
+		for (int i = 0; i < 8; i++)
 		{
-			if (tablic[iter].f == 0)
+			if (table[i].f == 0)
 			{
 				buff = "";
-				buff += to_string(tablic[iter].x1);
-				buff += to_string(tablic[iter].x2);
-				buff += to_string(tablic[iter].x3);
+				buff += to_string(table[i].x1);
+				buff += to_string(table[i].x2);
+				buff += to_string(table[i].x3);
 
-				int l, a, iter, k;
+				int l, a, i, k;
 				l = buff.size();
 				a = 0;
 				k = 1;
@@ -333,9 +355,9 @@ public:
 				{
 					a = a + k;
 				}
-				for (iter = l - 1; iter >= 0; --iter)
+				for (i = l - 1; i >= 0; --i)
 				{
-					if (buff[iter] == '1')
+					if (buff[i] == '1')
 					{
 						a = a + k;
 					}
@@ -344,18 +366,19 @@ public:
 
 				buff = to_string(a);
 
-				num_dec_sknf += buff;
-				num_dec_sknf += "*";
+				numeric_decimal_sknf += buff;
+				numeric_decimal_sknf += "*";
 			}
 		}
-		num_dec_sknf.erase(num_dec_sknf.begin()
-			+ num_dec_sknf.size() - 1);
+		numeric_decimal_sknf.erase(numeric_decimal_sknf.begin()
+			+ numeric_decimal_sknf.size() - 1);
+		//index initialization
 		buff = "";
-		for (int iter = 0; iter < 8; iter++)
+		for (int i = 0; i < 8; i++)
 		{
-			buff += to_string(tablic[iter].f);
+			buff += to_string(table[i].f);
 		}
-		int l, a, iter, k;
+		int l, a, i, k;
 		l = buff.size();
 		a = 0;
 		k = 1;
@@ -363,43 +386,45 @@ public:
 		{
 			a = a + k;
 		}
-		for (iter = l - 1; iter >= 0; --iter)
+		for (i = l - 1; i >= 0; --i)
 		{
-			if (buff[iter] == '1')
+			if (buff[i] == '1')
 			{
 				a = a + k;
 			}
 			k = k * 2;
 		}
-		indeks = to_string(a);
-	}
-	void print_table()
-	{
-		cout << "#\t1\t2\t3\t4\t5\t6\t7\t8" << endl;
-		cout << "_____________________________________________________" << endl;
-		cout << "a\t";
-		for (int iter = 0; iter < 8; iter++)
-		{
-			cout << tablic[iter].x1 << "\t";
-		}
-		cout << endl << "b\t";
-		for (int iter = 0; iter < 8; iter++)
-		{
-			cout << tablic[iter].x2 << "\t";
-		}
-		cout << endl << "c\t";
-		for (int iter = 0; iter < 8; iter++)
-		{
-			cout << tablic[iter].x3 << "\t";
-		}
-		cout << endl << "_____________________________________________________" << endl;
-		cout << "f\t";
-		for (int iter = 0; iter < 8; iter++)
-		{
-			cout << tablic[iter].f << "\t";
-		}
+		index = to_string(a);
 	}
 
+	void print_table()
+	{
+		cout << "#" << '\t' << "1" << '\t' << "2" << '\t' << "3"
+			<< '\t' << "4" << '\t' << "5" << '\t' << "6" << '\t'
+			<< "7" << '\t' << "8";
+		cout << endl << "___________________________________________________________________";
+		cout << endl << "a" << '\t';
+		for (int i = 0; i < 8; i++)
+		{
+			cout << table[i].x1 << "\t";
+		}
+		cout << endl << "b" << '\t';
+		for (int i = 0; i < 8; i++)
+		{
+			cout << table[i].x2 << "\t";
+		}
+		cout << endl << "c" << '\t';
+		for (int i = 0; i < 8; i++)
+		{
+			cout << table[i].x3 << "\t";
+		}
+		cout << endl << "___________________________________________________________________";
+		cout << endl << "f" << '\t';
+		for (int i = 0; i < 8; i++)
+		{
+			cout << table[i].f << "\t";
+		}
+	}
 	void print_SDNF()
 	{
 		cout << sdnf;
@@ -408,54 +433,51 @@ public:
 	{
 		cout << sknf;
 	}
-	void print_num_bin_sdnf()
+	void print_numeric_binary_sdnf()
 	{
-		cout << num_bin_sdnf;
+		cout << numeric_binary_sdnf;
 	}
-	void print_num_bin_sknf()
+	void print_numeric_binary_sknf()
 	{
-		cout << num_bin_sknf;
+		cout << numeric_binary_sknf;
 	}
-	void print_num_dec_sdnf()
+	void print_numeric_decimal_sdnf()
 	{
-		cout << num_dec_sdnf;
+		cout << numeric_decimal_sdnf;
 	}
-	void print_num_dec_sknf()
+	void print_numeric_decimal_sknf()
 	{
-		cout << num_dec_sknf;
+		cout << numeric_decimal_sknf;
 	}
-	void print_indeks()
+	void print_index()
 	{
-		cout << indeks;
+		cout << index;
 	}
 };
 
 int main()
 {
-	setlocale(LC_ALL, "ru");
-	string form;
-	while (true) {
-		cout << "Введите формулу: ";
-		getline(cin, form);
-		if (form == "1") { break; };
-		log_form log_form(form);
-		cout << endl;
-		log_form.print_table();
-		cout << endl << endl << "СДНФ: ";
-		log_form.print_SDNF();
-		cout << endl << "СКНФ: ";
-		log_form.print_SKNF();
-		cout << endl << endl << "Бинарный СДНФ: ";
-		log_form.print_num_bin_sdnf();
-		cout << endl << "Бинарный СКНФ: ";
-		log_form.print_num_bin_sknf();
-		cout << endl << endl << "Десятичный СДНФ: ";
-		log_form.print_num_dec_sdnf();
-		cout << endl << "Десятичный СКНФ: ";
-		log_form.print_num_dec_sknf();
-		cout << endl << endl << "Индекс: ";
-		log_form.print_indeks();
-		cout << endl << endl;
-	}
+	string formula;
+	cout << "Enter the formula: ";
+	getline(cin, formula);
+	logic_formula lf(formula);
+	cout << endl;
+	lf.print_table();
+	cout << endl << endl << "SDNF: ";
+	lf.print_SDNF();
+	cout << endl << "SKNF: ";
+	lf.print_SKNF();
+	cout << endl << endl << "Binary SDNF: ";
+	lf.print_numeric_binary_sdnf();
+	cout << endl << "Binary SKNF: ";
+	lf.print_numeric_binary_sknf();
+	cout << endl << endl << "Decimal SDNF: ";
+	lf.print_numeric_decimal_sdnf();
+	cout << endl << "Decimal SKNF: ";
+	lf.print_numeric_decimal_sknf();
+	cout << endl << endl << "Index: ";
+	lf.print_index();
+	cout << endl << endl;
+	system("pause");
 	return 0;
 }
