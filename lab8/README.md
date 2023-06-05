@@ -1,0 +1,8 @@
+!['aois_table.jpg'](https://github.com/Humansu1t/pics_for_rep/raw/main/lab8_1.png)
+!['aois_table.jpg'](https://github.com/Humansu1t/pics_for_rep/raw/main/lab8_2.png)
+!['aois_table.jpg'](https://github.com/Humansu1t/pics_for_rep/raw/main/lab8_3.png)
+!['aois_table.jpg'](https://github.com/Humansu1t/pics_for_rep/raw/main/lab8_4.png)
+!['aois_table.jpg'](https://github.com/Humansu1t/pics_for_rep/raw/main/lab8_5.png)
+!['aois_table.jpg'](https://github.com/Humansu1t/pics_for_rep/raw/main/lab8_6.png)
+!['aois_table.jpg'](https://github.com/Humansu1t/pics_for_rep/raw/main/lab8_7.png)
+!['aois_table.jpg'](https://github.com/Humansu1t/pics_for_rep/raw/main/lab8_8.png)
