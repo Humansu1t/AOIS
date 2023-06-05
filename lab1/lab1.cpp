@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -43,7 +43,7 @@ int main()
 	vector <bool> temp;
 
 	////////////////ПЕРЕВОД
-	cout << "**** +X1 = 13 ****" << endl;
+	cout << "**** +X1 = 17 ****" << endl;
 	cout << "Straight code: ";
 	temp = to_binary_straight(pos_x1);
 	print(temp);
@@ -55,7 +55,7 @@ int main()
 	print(temp);
 	cout << endl;
 	///////////
-	cout << "**** -X1 = -13 ****" << endl;
+	cout << "**** -X1 = -17 ****" << endl;
 	cout << "Straight code: ";
 	temp = to_binary_straight(neg_x1);
 	print(temp);
@@ -67,7 +67,7 @@ int main()
 	print(temp);
 	cout << endl;
 	///////////
-	cout << "**** +X2 = 21 ****" << endl;
+	cout << "**** +X2 = 9 ****" << endl;
 	cout << "Straight code: ";
 	temp = to_binary_straight(pos_x2);
 	print(temp);
@@ -79,7 +79,7 @@ int main()
 	print(temp);
 	cout << endl;
 	///////////
-	cout << "**** -X2 = -21 ****" << endl;
+	cout << "**** -X2 = -9 ****" << endl;
 	cout << "Straight code: ";
 	temp = to_binary_straight(neg_x2);
 	print(temp);
@@ -93,7 +93,7 @@ int main()
 	
 	////////////////ОПЕРАЦИИ
 
-	cout << "**** X1 + X2 = 34 **** " << endl;
+	cout << "**** X1 + X2 = 26 **** " << endl;
 	temp = addition(to_binary_straight(pos_x1), to_binary_straight(pos_x2));
 	cout << "Addition code: ";
 	print(temp);
@@ -113,7 +113,7 @@ int main()
 	print(temp);
 	cout << endl;
 	/////////////
-	cout << "**** -X1 - X2 = -34**** " << endl;
+	cout << "**** -X1 - X2 = -26**** " << endl;
 	cout << "Addition code: ";
 	temp = addition(to_binary_addition(neg_x1), to_binary_addition(neg_x2));
 	print(temp);
@@ -137,7 +137,7 @@ int main()
 	print(temp);
 	cout << endl;
 	/////////////
-	cout << "**** X1 * X2 = 273 **** " << endl;
+	cout << "**** X1 * X2 = 153 **** " << endl;
 	cout << "Straight code: ";
 	temp = multiplication(to_binary_straight(pos_x1), to_binary_straight(pos_x2));
 	print(temp);
@@ -147,7 +147,7 @@ int main()
 	print(temp);
 	cout << endl;
 	////////////
-	cout << "**** -X1 * X2 = -273 **** " << endl;
+	cout << "**** -X1 * X2 = -153 **** " << endl;
 	cout << "Addition code: ";
 	temp = multiplication(to_binary_straight(neg_x1), to_binary_straight(pos_x2));
 	print(temp);
@@ -159,7 +159,7 @@ int main()
 	print(temp);
 	cout << endl;
 	////////////
-	cout << "**** -X1 * -X2 = 273 **** " << endl;
+	cout << "**** -X1 * -X2 = 153 **** " << endl;
 	cout << "Addition code: ";
 	temp = multiplication(to_binary_straight(neg_x1), to_binary_straight(neg_x2));
 	print(temp);
@@ -169,7 +169,7 @@ int main()
 	print(temp);
 	cout << endl;
 	////////////
-	cout << "**** X1 * -X2 = -273 **** " << endl;
+	cout << "**** X1 * -X2 = -153 **** " << endl;
 	cout << "Addition code: ";
 	temp = multiplication(to_binary_straight(pos_x1), to_binary_straight(neg_x2));
 	print(temp);
